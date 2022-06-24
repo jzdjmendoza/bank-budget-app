@@ -7,12 +7,91 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.Header {
+  height: 5vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #fff, #f72585);
+  padding: 0.5em;
 }
 
+.Header-logo {
+  height: 400%;
+}
+
+.Main {
+  display: flex;
+  height: 93vh;
+  align-items: center;
+}
+
+.Sidebar {
+  max-width: 450px;
+  width: 33%;
+  height: 80vh;
+  background: linear-gradient(to right, #fff, #FDB8D7);;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.CardWrapper {
+  border-radius: 5px;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  width: 80%;
+  height: 30%;
+  background: linear-gradient(to top right, #4361ee, #f72585);
+  color: white;
+  margin: 2em;
+  margin-top: 5em;
+}
+
+.Card {
+  height: 80%;
+  padding: 1.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.CardHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.CardMid {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Visa {
+  width: 20%;
+  height: 100%;
+  z-index: 1;
+}
+
+.Microchip {
+  width: 20%;
+  height: 100%;
+}
+
+.CardDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.Balance {
+  font-size: 3em;
+  text-align: left;
+}
+
+.ExpDate {
+  font-size: 0.75em;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
