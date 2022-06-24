@@ -1,9 +1,10 @@
 import '../App.css'
 import visa from '../visa-logo.png'
 import microchip from '../microchip.png'
+import { useState } from "react";
 
 function Card(props) {
-    const { cardName, initialAmount, cardNumber, expDate } = props.userCard
+    const { userCard: { cardName, balance, cardNumber, expDate } } = props
     return (
         <div className="CardWrapper">
             <div className="Card">
@@ -12,7 +13,7 @@ function Card(props) {
                     <img className="Visa" src={visa} alt="" />
                 </div>
                 <div className="CardMid">
-                    <div className="Balance">$ {initialAmount}</div>
+                    <div className="Balance">$ {balance}</div>
                     <img className="Microchip" src={microchip} alt="" />
                 </div>
                 <div className="CardDetails">

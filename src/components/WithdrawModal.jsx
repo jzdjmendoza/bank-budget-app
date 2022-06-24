@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SidebarButton from "./SidebarButton";
 
-function DepositModal(props) {
+function WithdrawModal(props) {
     const [showModal, setShowModal] = useState(false)
     const [amount, setAmount ] = useState(0)
     const { userCard: { cardNumber, balance }, setCard } = props
@@ -9,9 +9,9 @@ function DepositModal(props) {
         setShowModal(!showModal)
     }
 
-    const depositMoney = () => {
+    const withdrawMoney = () => {
         let updatedValue = {}
-        updatedValue = { balance: parseFloat(balance) + parseFloat(amount) }
+        updatedValue = { balance: parseFloat(balance) - parseFloat(amount) }
         setCard( card => ({
             ...card,
             ...updatedValue,
@@ -20,7 +20,7 @@ function DepositModal(props) {
     }
     return (
         <>
-            <SidebarButton onClick = {toggleModal} showModal = {showModal} name='Deposit' />
+            <SidebarButton onClick = {toggleModal} showModal = {showModal} name='Withdraw' />
 
             {showModal ?
                 (<>
@@ -28,7 +28,7 @@ function DepositModal(props) {
                         <div className="relative w-auto my-6 mx-auto max-w-3xl">
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t ">
-                                <h3 className="text-3xl font=semibold">How much would you like to deposit?</h3>
+                                <h3 className="text-3xl font=semibold">How much would you like to withdraw?</h3>
                                 </div>
                                 <div className="relative p-6 flex-auto">
                                     <form className="bg-gray-200 shadow-md rounded px-8 pt-6 pb-8 w-full">
@@ -57,7 +57,7 @@ function DepositModal(props) {
                                     <button
                                         className="text-white bg-pink-700 active:bg-violet-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                                         type="button"
-                                        onClick={depositMoney}
+                                        onClick={withdrawMoney}
                                     >
                                         Submit
                                     </button>
@@ -71,4 +71,4 @@ function DepositModal(props) {
     )
 }
 
-export default DepositModal
+export default WithdrawModal

@@ -1,14 +1,17 @@
 import '../App.css'
 import Card from './Card'
-import DepositButton from './DepositButton'
 import DepositModal from './DepositModal'
+import WithdrawModal from './WithdrawModal'
+import SendMoneyModal from './SendMoneyModal'
 
 function Sidebar(props) {
-    const { userCard } = props
+    const { card, setCard } = props
     return(
         <div className="Sidebar">
-            <Card userCard={userCard}/>
-            <DepositModal userCard={userCard}/>
+            <Card userCard={card}/>
+            <DepositModal userCard={card} setCard={setCard}/>
+            <WithdrawModal userCard={card} setCard={setCard}/>
+            <SendMoneyModal userCard={card} setCard={setCard}/>
         </div>
     )
 }

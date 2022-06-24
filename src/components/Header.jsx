@@ -1,7 +1,7 @@
 import '../App.css'
 import logo from '../thrift-logo-bw.png'
 const Header = (props) => {
-    const { firstName, lastName } = props.user
+    const { user: {firstName, lastName}} = props
 
     return (
         <div className="Header">
