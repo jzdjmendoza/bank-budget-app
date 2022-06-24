@@ -1,14 +1,15 @@
 import { useState } from "react";
+import DepositButton from "./DepositButton";
 
 function DepositModal(props) {
     const [showModal, setShowModal] = useState(false)
     const { cardNumber } = props.userCard
+    const toggleModal = () => {
+        setShowModal(!showModal)
+    }
     return (
         <>
-            <button className="p-5 bg-sky-500 hover:bg-sky-700 rounded-md shadow-2xl" id="open-deposit"
-            onClick={() => setShowModal(true)}>
-                <p className="text-white">Deposit</p>
-            </button>
+            <DepositButton onClick = {toggleModal} showModal = {showModal} />
 
             {showModal ?
                 (<>
