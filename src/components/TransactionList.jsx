@@ -26,6 +26,7 @@ function TransactionList (props){
                             <td className="border px-8 py-4">{transaction.account}</td>
                         </tr>
                     ))}
+                    {(transactions && !transactions.length) && <tr className="border px-8 py-4 text-center">No transactions to show!</tr>}
                 </tbody>
             </table>
         </>

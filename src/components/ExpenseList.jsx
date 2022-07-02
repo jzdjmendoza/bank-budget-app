@@ -54,25 +54,24 @@ function ExpenseList (props){
                     <th className="bg-pink-300 border text-center px-8 py-4">Cost</th>
                     <th className="bg-pink-300 border text-center px-8 py-4">Date</th>
                     <th className="bg-pink-300 border text-center px-8 py-4">Account</th>
-                    <th className="bg-pink-300 border text-center px-8 py-4">Edit</th>
-                    <th className="bg-pink-300 border text-center px-8 py-4">Delete</th>
+                    <th className="bg-pink-300 border text-center px-8 py-4">Actions</th>
+
                 </tr>
                 </thead>
                 <tbody>
                     {expenses.map(expense => (
-                        <tr key={expense.id}>
+                        <tr className="odd:bg-white even:bg-slate-50" key={expense.id}>
                             <td className="border px-8 py-4">{expense.title}</td>
                             <td className="border px-8 py-4">{expense.cost}</td>
                             <td className="border px-8 py-4">{expense.date}</td>
                             <td className="border px-8 py-4">{expense.cardNumber}</td>
                             <td className="border px-8 py-4">
-                                <button type='button' onClick={() => handleEditExpense(expense)}>edit</button>
-                            </td>
-                            <td className="border px-8 py-4">
-                                <button type='button' onClick={() => handleDeleteExpense(expense)}>delete</button>
+                                <button type='button' className="w-10 h-10 my-1 bg-sky-500 hover:bg-sky-700 rounded-md shadow-2xl mx-2" onClick={() => handleEditExpense(expense)}>Edit</button>
+                                <button type='button' className="w-20 h-10 my-1 bg-sky-500 hover:bg-sky-700 rounded-md shadow-2xl" onClick={() => handleDeleteExpense(expense)}>Delete</button>
                             </td>
                         </tr>
                     ))}
+                    {(expenses && !expenses.length) && <tr className="border px-8 py-4 text-center">No expenses to show!</tr>}
                 </tbody>
             </table>
             <EditFormContext.Provider value={{ showModal, setShowModal, id, setId, title, setTitle, amount, setAmount, date, setDate, cardNumber, setCardNumber}}>
