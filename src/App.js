@@ -1,19 +1,13 @@
 import './App.css'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
-import { useState } from "react";
-import ExpenseList from './components/ExpenseList';
+import { useEffect, useState } from "react";
+import Tabs from './components/Tabs';
 import TransactionList from './components/TransactionList';
 import { ExpenseContext } from './contexts/ExpenseContext';
+import LoginRegister from './components/LoginRegister';
 
 function App() {
-  // set initial user
-  const user = {
-    firstName: 'Tommy',
-    lastName: 'Shelby',
-    email: 'jm@gmail.com'
-  }
-
   // set array of initial cards
   const initialCards = [
     {
@@ -30,40 +24,54 @@ function App() {
     }
   ]
 
-  // const [ user, setUser ] = useState(() => {
-  //  return JSON.parse(localStorage.getItem('user')) || null
-  // })
-
   const [transactions, setTransactions] = useState(() => {
     return JSON.parse(localStorage.getItem('transactions')) || []
-  });
-  const [cards, setCards] = useState(() => {
-    return JSON.parse(localStorage.getItem('cards')) || initialCards
   });
   const [expenses, setExpenses] = useState(() => {
     return JSON.parse(localStorage.getItem('expenses')) || []
   });
 
+  const [user, setUser] = useState(() =>{
+    return JSON.parse(localStorage.getItem('user'));
+  });
+
+  const [cards, setCards] = useState(() => {
+    const allCards = JSON.parse(localStorage.getItem('cards'))
+    return allCards
+  });
+
+  useEffect(() => {
+    if(user){
+      const transactions = JSON.parse(localStorage.getItem('transactions')) || []
+      const expenses = JSON.parse(localStorage.getItem('expenses')) || []
+
+      setTransactions(transactions.filter(transaction => transaction.userEmail === user.email))
+      setExpenses(expenses.filter(expense => expense.userEmail === user.email))
+      setCards(JSON.parse(localStorage.getItem('cards')).filter(card => card.userEmail === user.email))
+    }
+  }, [user])
+
+  const [users, setUsers] = useState();
+  const [openTab, setOpenTab] = useState(1);
+  const color = "pink";
+
   return (
-    <>
-      { user ? 
+    <> 
       <div className="App">
-        <Header user={user}/>
-        <ExpenseContext.Provider value={{ cards, setCards, transactions, setTransactions, expenses, setExpenses}}>
-          <div className="Main"> 
-            <Sidebar className="Sidebar"/>
-            <div className='d-flex'>
-              <div className='mb-10'>
-                <ExpenseList className="Expenses"/>
+        {user ? (
+          <>
+            <Header user={user} setUser={setUser}/>
+            <ExpenseContext.Provider value={{ user, setUser, cards, setCards, transactions, setTransactions, expenses, setExpenses}}>
+              <div className="Main"> 
+                <Sidebar className="Sidebar"/>
+                <Tabs />
               </div>
-              <div>
-                <TransactionList className="Transactions"/>
-              </div>
-            </div>
-          </div>
-        </ExpenseContext.Provider>
+            </ExpenseContext.Provider>
+          </>
+        ) : 
+          <LoginRegister setUser = {setUser}/>
+        }
       </div>
-      : null } {/* change null to Login component */} 
     </>
   );
 }

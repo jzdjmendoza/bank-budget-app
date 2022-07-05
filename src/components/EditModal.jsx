@@ -21,16 +21,24 @@ const EditModal = (props) => {
 
             newCard.balance = parseFloat(newCard.balance) - parseFloat(amount);
             oldCard.balance = parseFloat(oldCard.balance) + parseFloat(oldExpense.cost);
+
+            const lsCards = JSON.parse(localStorage.getItem('cards'))
+            lsCards.find(card => card.cardNumber === oldCard.cardNumber).balance = oldCard.balance
+            lsCards.find(card => card.cardNumber === newCard.cardNumber).balance = newCard.balance
+            localStorage.setItem('cards', JSON.stringify(lsCards))
         } else {
             const card = newCards.find(card => card.cardNumber === oldExpense.cardNumber);
             const costDifference = parseFloat(amount) - parseFloat(oldExpense.cost);
 
             card.balance = parseFloat(card.balance) - costDifference;
+
+            const lsCards = JSON.parse(localStorage.getItem('cards'))
+            lsCards.find(lsCard => lsCard.cardNumber === card.cardNumber).balance = card.balance
+            localStorage.setItem('cards', JSON.stringify(lsCards))
         }
 
          // update cards using useState function of the cards array
         setCards(newCards)
-        localStorage.setItem('cards', JSON.stringify(newCards))
         
         // update expenses
         setExpenses(existingExpenses => {
@@ -51,7 +59,7 @@ const EditModal = (props) => {
                         <div className="relative w-auto my-6 mx-auto max-w-3xl">
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-pink-300 rounded-t ">
-                                <h3 className="text-3xl font=semibold">Edit Expense</h3>
+                                <h3 className="text-3xl font=semibold">Modify Your Expense</h3>
                                 </div>
                                 <div className="relative p-6 flex-auto">
                                     <form className="bg-gray-200 shadow-md rounded px-8 pt-6 pb-8 w-full">

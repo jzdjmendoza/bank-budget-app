@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@1,600&family=Poppins&display=swap');
+
 .App {
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .App-logo {
@@ -24,29 +27,37 @@
   display: flex;
   height: 93vh;
   align-items: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .Sidebar {
   max-width: 450px;
   width: 33%;
-  height: 80vh;
+  height: 90vh;
   background: linear-gradient(to right, #fff, #FDB8D7);;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: center;
   border-radius: 10px;
+}
+
+.CardDiv {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .CardWrapper {
   border-radius: 5px;
   box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
-  width: 80%;
-  height: 30%;
+  width: 85%;
+  height: 14em;
   background: linear-gradient(to top right, #4361ee, #f72585);
   color: white;
   margin: 1em;
-  margin-top: 3em;
+  margin-top: 1em;
 }
 
 .Card {
@@ -114,4 +125,219 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+//LogIn and Register
+.loginH1 {
+	margin: 0;
+  font-size: 25px;
+  font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.registerP {
+	font-size: 18px;
+	font-weight: 100;
+	line-height: 20px;
+	letter-spacing: 0.5px;
+	margin: 20px 0 50px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.loginP {
+  font-family: 'Poppins', sans-serif;
+  margin: 20px 0;
+}
+
+.loginRegisterButton {
+	border-radius: 20px;
+	border: 1px solid #f72585;
+	background-color: #f72585;
+	color: #FFFFFF;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	transition: transform 80ms ease-in;
+  font-family: 'Poppins', sans-serif;
+}
+
+.loginRegisterButton:active {
+	transform: scale(0.95);
+	background-color: #f72585;
+	border: 1px solid #f72585;
+}
+
+.loginRegisterButton:focus {
+	outline: none;
+	background-color: #f72585;
+	border: 1px solid #f72585;
+}
+
+.ghost {
+	background-color: transparent;
+	border-color: #FFFFFF;
+}
+
+.loginRegisterButton:disabled {
+	background-color: rgba(247, 37, 133, 0.6);
+	border: none;
+}
+
+.loginForm {
+	background-color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 50px;
+	height: 100%;
+	text-align: center;
+}
+
+.logInRegisterInput {
+	background-color: #eee;
+	padding: 12px 15px;
+	margin: 8px 0;
+	width: 100%;
+  font-family: 'Poppins', sans-serif;
+}
+
+.logInRegisterInput:focus {
+  border: 1px solid #730BB8;
+}
+
+.container {
+	background-color: #fff;
+	border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+	position: relative;
+	overflow: hidden;
+	width: 768px;
+	max-width: 100%;
+	min-height: 480px;
+}
+
+.formContainer {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	transition: all 0.6s ease-in-out;
+}
+
+.loginContainer {
+	left: 0;
+	width: 50%;
+	z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.container.rightPanelActive .loginContainer {
+	transform: translateX(100%);
+  opacity: 0;
+}
+
+.registerContainer {
+	left: 0;
+	width: 50%;
+	opacity: 0;
+	z-index: 1;
+}
+
+.container.rightPanelActive .registerContainer {
+	transform: translateX(100%);
+	opacity: 1;
+	z-index: 5;
+	animation: show 0.6s;
+}
+
+@keyframes show {
+	0%, 49.99% {
+		opacity: 0;
+		z-index: 1;
+	}
+	
+	50%, 100% {
+		opacity: 1;
+		z-index: 5;
+	}
+}
+
+.overlayContainer {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 50%;
+	height: 100%;
+	overflow: hidden;
+	transition: transform 0.6s ease-in-out;
+	z-index: 100;
+}
+
+.container.rightPanelActive .overlayContainer{
+	transform: translateX(-100%);
+}
+
+.overlay {
+	background: #2bb5ff;
+	background: -webkit-linear-gradient(to top right, #4361ee, #f72585);
+	background: linear-gradient(to top right, #4361ee, #f72585);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 0 0;
+	color: #FFFFFF;
+	position: relative;
+	left: -100%;
+	height: 100%;
+	width: 200%;
+  transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+.container.rightPanelActive .overlay {
+  	transform: translateX(50%);
+}
+
+.overlayPanel {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 40px;
+	text-align: center;
+	top: 0;
+	height: 100%;
+	width: 50%;
+	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+.overlayLeft {
+	transform: translateX(-20%);
+}
+
+.container.rightPanelActive .overlayLeft {
+	transform: translateX(0);
+}
+
+.overlayRight {
+	right: 0;
+	transform: translateX(0);
+}
+
+.container.rightPanelActive .overlayRight {
+	transform: translateX(20%);
+}
+
+.bigDiv {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font-family: 'Montserrat Alternates', sans-serif;
+	height: 100vh;
+/*	margin: -20px 0 50px;*/
+	width:100%;
+  color: black;
 }

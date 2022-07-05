@@ -1,70 +1,172 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import SidebarButton from "./SidebarButton";
 import ExpenseForm from "./ExpenseForm";
 import { ExpenseContext } from '../contexts/ExpenseContext';
 import { FormContext } from '../contexts/FormContext';
+import Swal from 'sweetalert2';
 
 function FormModal(props) {
     // original cards and setCards variables/functions
-    const { type } = props
-    const { cards, setCards, expenses, transactions, setExpenses, setTransactions  } = useContext(ExpenseContext)
-    const { categories, amount, cardNumber, title, date, setCardNumber, setAmount, setTitle, setDate } = useContext(FormContext)
-    const [ showModal, setShowModal ] = useState(false)
+    const { type } = props;
+    const { cards, setCards, expenses, transactions, setExpenses, setTransactions, user } = useContext(ExpenseContext);
+    const { categories, amount, cardNumber, title, date, destinationCardNumber, setDestinationCardNumber, setCardNumber, setAmount, setTitle, setDate } = useContext(FormContext);
+    const [ showModal, setShowModal ] = useState(false);
+    const [errors, setErrors] = useState({
+        amount:'' ,
+        destinationCardNumber: '',
+        title: '',
+        date: '',
+        cardNumber: ''
+    });
+        
+    useEffect(() => {
+        setCardNumber(cards[0].cardNumber)
+    }, [cards])
 
     // toggling modal
     const toggleModal = () => {
         setShowModal(!showModal)
     }
 
+    const resetError = () => {
+        setErrors({
+            amount:'' ,
+            destinationCardNumber: '',
+            title: '',
+            date: '',
+            cardNumber: ''
+        })
+    }
+
     const addExpense = () => {
         const newExpenses = [...expenses]
         const id = expenses.length ? expenses[expenses.length - 1].id + 1 : 1
-        newExpenses.push({ id: id, title: title, cost: amount, date: date, cardNumber: cardNumber });
+        const newExpense = { id: id, title: title, cost: amount, date: date, cardNumber: cardNumber, userEmail: user.email}
+        newExpenses.push(newExpense);
         setExpenses(newExpenses);
-        localStorage.setItem('expenses', JSON.stringify(newExpenses))
+
+        const lsExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        lsExpenses.push(newExpense)
+        localStorage.setItem('expenses', JSON.stringify(lsExpenses))
     }
 
     const addTransaction = (balance) => {
         const newTransactions = [...transactions]
-        newTransactions.push({ type: type.split(/(?=[A-Z])/).join(' '), amount: amount, date: new Date().toLocaleDateString('en-CA'), account: cardNumber, runningBalance: balance });
+        const newTransaction = { type: type.split(/(?=[A-Z])/).join(' '), amount: amount, date: new Date().toLocaleDateString('en-CA'), account: cardNumber, runningBalance: balance, userEmail: user.email }
+        newTransactions.push(newTransaction);
         setTransactions(newTransactions);
-        localStorage.setItem('transactions', JSON.stringify(newTransactions))
+
+        const lsTransactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        lsTransactions.push(newTransaction)
+        localStorage.setItem('transactions', JSON.stringify(lsTransactions))
+    }
+
+    const validateForm = () => {
+        // const newError =
+        let noError = true
+        switch(type){
+            case 'sendMoney':
+                if(amount === 0 || amount === '') {
+                    setErrors(prevError => ({...prevError, amount: 'Amount is required!'}))
+                    noError = false
+                } else {
+                    setErrors(prevError => ({...prevError, amount: ''}))
+                }
+                if(destinationCardNumber === '') {
+                    setErrors(prevError => ({...prevError, destinationCardNumber: 'Destination card number is required!'}))
+                    noError = false
+                } else {
+                    const allCards = JSON.parse(localStorage.getItem('cards'))
+                    if(allCards.find(card => card.cardNumber === destinationCardNumber)){
+                        setErrors(prevError => ({...prevError, destinationCardNumber: ''}))
+                    } else {
+                        setErrors(prevError => ({...prevError, destinationCardNumber: 'Destination account not found.'}))
+                        noError = false
+                    }
+                }
+                break;
+            case 'deposit':
+            case 'withdraw':
+                if(amount === 0 || amount === '') {
+                    setErrors(prevError => ({...prevError, amount: 'Amount is required!'}))
+                    noError = false
+                } else {
+                    setErrors(prevError => ({...prevError, amount: ''}))
+                }
+            break;
+            case 'expense':
+                if(amount === 0 || amount === '') {
+                    setErrors(prevError => ({...prevError, amount: 'Amount is required!'}))
+                    noError = false
+                } else {
+                    setErrors(prevError => ({...prevError, amount: ''}))
+                }
+                if(title === '') {
+                    setErrors(prevError => ({...prevError, title: 'Category is required!'}))
+                    noError = false
+                } else {
+                    setErrors(prevError => ({...prevError, category: ''}))
+                }
+                if(date === '') {
+                    setErrors(prevError => ({...prevError, date: 'Date is required!'}))
+                    noError = false
+                } else {
+                    setErrors(prevError => ({...prevError, date: ''}))
+                }
+            break;
+        }
+        
+        return noError;
     }
 
     const handleSubmit = () => {
-        // first, get a copy of current state of cards array
-        const newCards = [...cards];
+    
+        if(validateForm()){
+            // get a copy of current state of cards array
+            const newCards = [...cards];
+            // find the card selected in the dropdown from the cards array
+            const card = newCards.find(card => card.cardNumber === cardNumber)
+            // console.log(cardNumber)
+            // compute for the new balance
+            // used parseFloat to parse input to make sure decimal is included
+            switch(type) {
+                case 'deposit':
+                    card.balance = parseFloat(card.balance) + parseFloat(amount)
+                    break;
+                case 'withdraw':
+                    card.balance = parseFloat(card.balance) - parseFloat(amount)
+                    break;
+                case 'sendMoney':
+                    const allCards = JSON.parse(localStorage.getItem('cards')) || []
+                    const dest = allCards.find(card => card.cardNumber === destinationCardNumber)
 
-        // find the card selected in the dropdown from the cards array
-        const card = newCards.find(card => card.cardNumber === cardNumber)
+                    card.balance = parseFloat(card.balance) - parseFloat(amount)
+                    dest.balance = parseFloat(dest.balance) + parseFloat(amount)
 
-        // compute for the new balance
-        // used parseFloat to parse input to make sure decimal is included
-        switch(type) {
-            case 'deposit':
-                card.balance = parseFloat(card.balance) + parseFloat(amount)
-                break;
-            case 'withdraw':
-                card.balance = parseFloat(card.balance) - parseFloat(amount)
-                break;
-            case 'sendMoney':
-                card.balance = parseFloat(card.balance) - parseFloat(amount)
-                break;
-            case 'expense':
-                card.balance = parseFloat(card.balance) - parseFloat(amount)
-                addExpense();
-                break;
+                    localStorage.setItem('cards', JSON.stringify(allCards))
+                    break;
+                case 'expense':
+                    card.balance = parseFloat(card.balance) - parseFloat(amount)
+                    addExpense();
+                    break;
+            }
+
+            if(type != 'expense') addTransaction(card.balance);
+            // update cards using useState function of the cards array
+            setCards(newCards)
+
+            const lsCards = JSON.parse(localStorage.getItem('cards'))
+            lsCards.find(card => card.cardNumber === cardNumber).balance = card.balance
+            localStorage.setItem('cards', JSON.stringify(lsCards))
+
+            Swal.fire('Successful!', '', 'success');
+
+            // reset default values for the function/page
+            setShowModal(false)
+            setCardNumber(cards[0].cardNumber)
+            setAmount(0)
+            type != 'expense' && setDestinationCardNumber('')
         }
-
-        if(type != 'expense') addTransaction(card.balance);
-        // update cards using useState function of the cards array
-        setCards(newCards)
-        localStorage.setItem('cards', JSON.stringify(newCards))
-
-        // reset default values for the function/page
-        setShowModal(false)
-        setCardNumber(cards[0].cardNumber)
-        setAmount(0)
     }
 
     const transactionType = {
@@ -103,19 +205,22 @@ function FormModal(props) {
                                                 <option key={index}>{card.cardNumber}</option>
                                             ))}
                                         </select>
+                                        <span style={{ color: "red" }}>{errors["cardNumber"]}</span>
                                         { type === 'sendMoney' ?
                                             (<>
                                                 <label className="block text-black text-sm font-bold mb-1">
                                                 Choose Destination:
                                                 </label>
-                                                <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" placeholder="XXXX-XXXX-XXXX"/>
+                                                <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" placeholder="XXXX-XXXX-XXXX" onChange = {(e) => setDestinationCardNumber(e.target.value)}/>
+                                                <span style={{ color: "red" }}>{errors["destinationCardNumber"]}</span>
                                             </>)
                                         : null}
                                         <label className="block text-black text-sm font-bold mb-1">
                                         Amount:
                                         </label>
                                         {/* added onChange to input to change local variable amount to new value */}
-                                        <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" onChange = {(e) => setAmount(e.target.value)} />
+                                        <input className="shadow appearance-none border rounded w-full py-2 px-1 text-black" type="number" onChange = {(e) => setAmount(e.target.value)} />
+                                        <span style={{ color: "red" }}>{errors["amount"]}</span>
                                         { type === 'expense' ?
                                             (<>
                                                 <label className="block text-black text-sm font-bold mb-1">
@@ -141,8 +246,10 @@ function FormModal(props) {
                                     <button
                                         className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
                                         type="button"
-                                        onClick={() => setShowModal(false)}
-                                    >
+                                        onClick={() => {
+                                            resetError();
+                                            setShowModal(false)
+                                        }}>
                                         Close
                                     </button>
                                     <button
